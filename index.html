@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>休息提醒工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { color: #333; }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+        .btn:hover { background: #45a049; }
+        .btn-web {
+            background: #2196F3;
+        }
+        .info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>💤 休息提醒工具</h1>
+
+    <div class="info">
+        <h2>欢迎使用休息提醒工具！</h2>
+        <p>请选择适合您的版本：</p>
+    </div>
+
+    <a href="rest_reminder_web.html" class="btn btn-web">🌐 Web版本</a>
+    <a href="https://github.com/hujwCode/rest-reminder" class="btn">📦 源代码</a>
+
+    <div class="info" style="text-align: left; margin-top: 30px;">
+        <h3>版本说明：</h3>
+        <ul>
+            <li><strong>Web版本</strong>：直接在浏览器使用，无需安装</li>
+            <li><strong>桌面版</strong>：Windows/Mac/Linux桌面应用</li>
+            <li><strong>移动版</strong>：Android/iOS原生应用（需要打包）</li>
+        </ul>
+    </div>
+
+    <script>
+        // 检测设备类型
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            console.log('移动设备检测到');
+        }
+    </script>
+</body>
+</html>
