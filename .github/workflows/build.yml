@@ -65,15 +65,14 @@ jobs:
       run: |
         buildozer --version
 
-    - name: Download Android SDK/NDK
+    - name: Initialize Buildozer
       run: |
-        buildozer android download_sdk_platforms
+        buildozer init
       continue-on-error: true
 
     - name: Build APK
       run: |
         buildozer -v android debug
-      continue-on-error: true
 
     - name: Check if APK exists
       run: |
