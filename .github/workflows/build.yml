@@ -47,7 +47,10 @@ jobs:
           libswscale-dev \
           libavformat-dev \
           libavcodec-dev \
-          zlib1g-dev
+          zip \
+          unzip \
+          autoconf \
+          libtool
 
     - name: Set up Java
       uses: actions/setup-java@v4
@@ -60,19 +63,17 @@ jobs:
         pip3 install --upgrade pip
         pip3 install buildozer
         pip3 install cython
+        pip3 install 'python-for-android[recommended]'
 
     - name: Display Buildozer version
       run: |
         buildozer --version
 
-    - name: Initialize Buildozer
-      run: |
-        buildozer init
-      continue-on-error: true
-
     - name: Build APK
       run: |
         buildozer -v android debug
+      env:
+        BUILDozer_WARN_ON_ROOT: 0
 
     - name: Check if APK exists
       run: |
