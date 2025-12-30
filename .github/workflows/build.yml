@@ -1,0 +1,28 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build APK with Buildozer
+      uses: ArtemSBulgakov/buildozer-android-action@v1.2.1
+      id: buildozer
+      with:
+        workdir: .
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk
+        path: ${{ steps.buildozer.outputs.filename }}
+
+    - name: Download APK
+      run: echo "APK file is ready to download from Artifacts section!"
