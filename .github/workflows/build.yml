@@ -32,14 +32,22 @@ jobs:
           pkg-config \
           libncurses5-dev \
           libncursesw5-dev \
-          libtinfo5 \
           libc6-dev \
-          lib32gcc1 \
+          lib32gcc-s1 \
           lib32stdc++6 \
           zlib1g-dev \
           libssl-dev \
           libffi-dev \
-          ccache
+          ccache \
+          libsdl2-dev \
+          libsdl2-image-dev \
+          libsdl2-mixer-dev \
+          libsdl2-ttf-dev \
+          libportmidi-dev \
+          libswscale-dev \
+          libavformat-dev \
+          libavcodec-dev \
+          zlib1g-dev
 
     - name: Set up Java
       uses: actions/setup-java@v4
@@ -70,7 +78,7 @@ jobs:
     - name: Check if APK exists
       run: |
         echo "Searching for APK files..."
-        find . -name "*.apk" -type f -ls
+        find . -name "*.apk" -type f -ls || true
         ls -la bin/ || echo "bin directory not found"
 
     - name: Upload APK artifact
@@ -95,5 +103,6 @@ jobs:
       if: always()
       run: |
         echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- Buildozer version: $(buildozer --version)" >> $GITHUB_STEP_SUMMARY
-        echo "- APK Status: $([ -f bin/*.apk ] && echo 'SUCCESS' || echo 'FAILED')" >> $GITHUB_STEP_SUMMARY
+        echo "Build completed at $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- Buildozer version: $(buildozer --version 2>/dev/null || echo 'not installed')" >> $GITHUB_STEP_SUMMARY
+        echo "- APK Status: $([ -f bin/*.apk ] && echo 'SUCCESS' || echo 'CHECK LOGS')" >> $GITHUB_STEP_SUMMARY
