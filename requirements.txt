@@ -1,0 +1,11 @@
+# 桌面版依赖
+tkinter
+
+# 移动版依赖
+kivy>=2.1.0
+plyer>=2.1.0
+python-for-android>=2023.03.11
+
+# 打包工具
+buildozer>=1.5.0
+cython>=3.0.0
