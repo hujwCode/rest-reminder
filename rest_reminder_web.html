@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4CAF50">
+    <title>休息提醒</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            padding: 12px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover, .preset-btn:active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .status {
+            text-align: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .status.running {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-start {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-start:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-stop {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-stop:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-test {
+            width: 100%;
+            padding: 12px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .modal-tips {
+            text-align: left;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .modal-time {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-ok {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-snooze {
+            background: #ff9800;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">💤</div>
+            <h1>休息提醒</h1>
+            <p class="subtitle">定时休息，保护健康</p>
+        </div>
+
+        <div class="input-group">
+            <label>提醒间隔（分钟）</label>
+            <input type="number" id="minutes" value="60" min="1">
+        </div>
+
+        <div class="presets">
+            <button class="preset-btn" onclick="setTime(30)">30分钟</button>
+            <button class="preset-btn" onclick="setTime(60)">1小时</button>
+            <button class="preset-btn" onclick="setTime(90)">1.5小时</button>
+            <button class="preset-btn" onclick="setTime(120)">2小时</button>
+        </div>
+
+        <div class="status" id="status">状态：未启动</div>
+
+        <div class="button-group">
+            <button class="btn btn-start" id="startBtn" onclick="startReminder()">开始提醒</button>
+            <button class="btn btn-stop" id="stopBtn" onclick="stopReminder()" disabled>停止</button>
+        </div>
+
+        <button class="btn-test" onclick="showReminder()">🔔 测试提醒</button>
+
+        <div class="footer">移动Web版 v1.0</div>
+    </div>
+
+    <!-- 提醒弹窗 -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-icon">☕</div>
+            <div class="modal-title">该休息一下啦！</div>
+            <div class="modal-tips">
+                🔸 站起来走动走动<br>
+                🔸 远眺放松眼睛<br>
+                🔸 喝杯水补充水分<br>
+                🔸 做个简单的伸展运动
+            </div>
+            <div class="modal-time" id="modalTime"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-ok" onclick="closeModal()">我知道了</button>
+                <button class="modal-btn btn-snooze" onclick="snooze()">5分钟后</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isRunning = false;
+        let timer = null;
+        let reminderMinutes = 60;
+
+        function setTime(minutes) {
+            document.getElementById('minutes').value = minutes;
+        }
+
+        function updateStatus(text, running = false) {
+            const status = document.getElementById('status');
+            status.textContent = '状态：' + text;
+            if (running) {
+                status.classList.add('running');
+            } else {
+                status.classList.remove('running');
+            }
+        }
+
+        function startReminder() {
+            const minutes = parseInt(document.getElementById('minutes').value);
+
+            if (isNaN(minutes) || minutes <= 0) {
+                alert('请输入有效的时间！');
+                return;
+            }
+
+            reminderMinutes = minutes;
+            isRunning = true;
+
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+            updateStatus(`运行中（每${minutes}分钟）`, true);
+
+            // 启动计时器
+            timer = setTimeout(() => {
+                if (isRunning) {
+                    showReminder();
+                    // 循环提醒
+                    timer = setTimeout(arguments.callee, minutes * 60 * 1000);
+                }
+            }, minutes * 60 * 1000);
+
+            // 最小化页面（可选）
+            // window.parent.blur();
+        }
+
+        function stopReminder() {
+            isRunning = false;
+
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            updateStatus('已停止');
+        }
+
+        function showReminder() {
+            const modal = document.getElementById('modal');
+            const time = document.getElementById('modalTime');
+
+            const now = new Date();
+            time.textContent = `当前时间：${now.toLocaleTimeString()}`;
+
+            modal.classList.add('show');
+
+            // 震动提醒（移动端）
+            if ('vibrate' in navigator) {
+                navigator.vibrate([500, 200, 500]);
+            }
+
+            // 播放提示音
+            playBeep();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function snooze() {
+            closeModal();
+            setTimeout(showReminder, 5 * 60 * 1000); // 5分钟后
+        }
+
+        function playBeep() {
+            // 播放提示音
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // 防止页面关闭时丢失提醒（使用localStorage）
+        window.addEventListener('beforeunload', (e) => {
+            if (isRunning) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '提醒正在进行中，确定要离开吗？';
+            }
+        });
+
+        // 请求通知权限
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    </script>
+</body>
+</html>
