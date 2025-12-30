@@ -88,6 +88,19 @@ jobs:
       run: |
         export ANDROID_HOME=$HOME/.buildozer/android/platform/android-sdk
         export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+        # Create tools directory for buildozer compatibility
+        mkdir -p $ANDROID_HOME/tools/bin
+
+        # Create sdkmanager wrapper
+        cat > $ANDROID_HOME/tools/bin/sdkmanager << 'EOF'
+        #!/bin/bash
+        exec $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "$@"
+        EOF
+
+        chmod +x $ANDROID_HOME/tools/bin/sdkmanager
+
+        # Accept licenses and install required components
         yes | sdkmanager --licenses
         sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
 
