@@ -10,45 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Build APK with Buildozer
+      id: buildozer
+      uses: ArtemSBulgakov/buildozer-android-action@v1.2.1
       with:
-        python-version: '3.9'
+        workdir: .
 
-    - name: Install Buildozer
-      run: |
-        pip install buildozer
-        pip install cython
-
-    - name: Install system dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y build-essential git python3 python3-pip
-        sudo apt install -y openjdk-17-jdk
-        sudo apt install -y automake libtool pkg-config libncurses5-dev libncursesw5-dev libtinfo5 libc6-dev lib32gcc1 lib32stdc++6
-        sudo apt install -y zlib1g-dev
-
-    - name: Build APK
-      run: |
-        buildozer android debug
-      continue-on-error: true
-
-    - name: Find and upload APK
-      run: |
-        find . -name "*.apk" -type f
-      continue-on-error: true
-
-    - name: Upload APK if exists
+    - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: apk
         path: bin/*.apk
-      if: success() || failure()
-
-    - name: Buildozer cache
-      uses: actions/cache@v3
-      with:
-        path: .buildozer_cache
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+        if-no-files-found: warn
