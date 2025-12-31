@@ -19,8 +19,7 @@ source.include_exts = py,png,jpg,kv,atlas,json
 version = 1.0.0
 
 # (list) Application requirements
-# kivy.core.window.Window needs to be included
-requirements = python3,kivy,plyer,pyjnius
+requirements = python3,kivy,plyer,pyjnius,python3,kivy
 
 # (str) Preset of buildozer options
 preset = android
@@ -29,16 +28,16 @@ preset = android
 orientation = portrait
 
 # (list) Permissions
-android.permissions = VIBRATE,WAKE_LOCK,RECEIVE_BOOT_COMPLETED
+android.permissions = VIBRATE,WAKE_LOCK
 
-# (int) Target Android API (should match latest stable)
-android.api = 33
+# (int) Target Android API
+android.api = 31
 
 # (int) Minimum Android API
 android.minapi = 21
 
-# (str) NDK version (use stable version)
-android.ndk = 25b
+# (str) NDK version
+android.ndk = 23b
 
 # (list) Android architectures
 android.archs = arm64-v8a,armeabi-v7a
@@ -52,9 +51,6 @@ android.python = python3
 # (str) Android entry point
 android.entrypoint = org.kivy.android.PythonActivity
 
-# (list) android.gradle_dependencies
-# android.gradle_dependencies =
-
 # (bool) Indicate whether -rooted flag should be used or not
 android.rooted = False
 
@@ -64,4 +60,4 @@ android.rooted = False
 log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
-warn_on_root = 1
+warn_on_root = 0
