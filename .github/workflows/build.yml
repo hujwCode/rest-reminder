@@ -16,29 +16,10 @@ jobs:
 
     - name: Build APK with Buildozer
       uses: ArtemSBulgakov/buildozer-android-action@v1.2.1
-      id: buildozer
-      with:
-        workdir: .
 
-    - name: Check if APK was created
-      run: |
-        echo "Checking for APK files..."
-        find . -name "*.apk" -type f 2>/dev/null || echo "No APK found"
-        ls -la bin/ 2>/dev/null || echo "bin directory not found"
-
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v4
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
       with:
         name: apk
-        path: |
-          bin/*.apk
-          *.apk
-        if-no-files-found: warn
+        path: bin/*.apk
         retention-days: 30
-
-    - name: Build summary
-      if: always()
-      run: |
-        echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
-        echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-        echo "- APK: $([ -f bin/*.apk ] && echo 'Created successfully' || echo 'Not found')" >> $GITHUB_STEP_SUMMARY
